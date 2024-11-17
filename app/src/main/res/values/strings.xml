@@ -1,0 +1,9 @@
+<resources>
+    <!-- Actividad Main -->
+
+    <string name="app_name">LylouDine</string>
+    <string name="version">Version 1.0</string>
+
+    <!-- ActividadLogin -->
+    <string name="Login">Iniciar Sesion</string>
+</resources>
