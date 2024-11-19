@@ -63,20 +63,25 @@
         app:layout_constraintVertical_bias="0.679" />
 
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/BLogin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
-        android:background="@drawable/button_background_selector"
+        android:backgroundTint="@color/colorPrimary"
         android:text="Comenzar"
-        android:textColor="#FFFFFF"
+        android:textColor="@android:color/white"
+        android:padding="16dp"
+        app:cornerRadius="12dp"
+        app:rippleColor="@color/colorAccent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.793" />
+
+
 
     <TextView
         android:id="@+id/TVError"
