@@ -17,7 +17,7 @@ public class MesaAdapter extends RecyclerView.Adapter<MesaAdapter.MesaViewHolder
     private List<Mesa> mesasFull;
 
     public MesaAdapter(List<Mesa> mesas) {
-        this.mesas = mesas;
+        this.mesas = new ArrayList<>(mesas);
         this.mesasFull = new ArrayList<>(mesas);
     }
 
@@ -31,7 +31,7 @@ public class MesaAdapter extends RecyclerView.Adapter<MesaAdapter.MesaViewHolder
     @Override
     public void onBindViewHolder(@NonNull MesaViewHolder holder, int position) {
         Mesa mesa = mesas.get(position);
-        holder.btnMesa.setText(mesa.getName() + " - " + mesa.getPrice());
+        holder.btnMesa.setText(String.format("%s - %s", mesa.getName(), mesa.getPrice()));
 
         holder.btnMesa.setOnClickListener(v -> {
             // Lógica para gestionar la mesa
@@ -49,23 +49,20 @@ public class MesaAdapter extends RecyclerView.Adapter<MesaAdapter.MesaViewHolder
         return mesaFilter;
     }
 
-    private Filter mesaFilter = new Filter() {
+    private final Filter mesaFilter = new Filter() {
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
             List<Mesa> filteredList = new ArrayList<>();
-
             if (constraint == null || constraint.length() == 0) {
                 filteredList.addAll(mesasFull);
             } else {
                 String filterPattern = constraint.toString().toLowerCase().trim();
-
                 for (Mesa item : mesasFull) {
                     if (item.getName().toLowerCase().contains(filterPattern)) {
                         filteredList.add(item);
                     }
                 }
             }
-
             FilterResults results = new FilterResults();
             results.values = filteredList;
             return results;
@@ -74,13 +71,13 @@ public class MesaAdapter extends RecyclerView.Adapter<MesaAdapter.MesaViewHolder
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
             mesas.clear();
-            mesas.addAll((List) results.values);
+            mesas.addAll((List<Mesa>) results.values);
             notifyDataSetChanged();
         }
     };
 
     static class MesaViewHolder extends RecyclerView.ViewHolder {
-        Button btnMesa;
+        final Button btnMesa;
 
         MesaViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -88,9 +85,11 @@ public class MesaAdapter extends RecyclerView.Adapter<MesaAdapter.MesaViewHolder
         }
     }
 
-    public void addMesa(Mesa mesa) {
-        mesas.add(mesa);
-        mesasFull.add(mesa);
+    public void addMesa() {
+        int newMesaNumber = mesas.size() + 1;
+        Mesa newMesa = new Mesa("Mesa " + newMesaNumber, "0.00 €");
+        mesas.add(newMesa);
+        mesasFull.add(newMesa);
         notifyItemInserted(mesas.size() - 1);
     }
 
