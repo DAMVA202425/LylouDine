@@ -1,0 +1,97 @@
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".admin.AdminActivity"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        android:orientation="horizontal"
+        android:padding="5dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:background="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/b_Categoria"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:padding="8dp"
+            app:backgroundTint="@color/white"
+            app:iconTint="@color/colorPrimary"
+            app:cornerRadius="12dp"
+            app:icon="@drawable/category_white"
+            app:iconGravity="textStart"
+            app:iconSize="30dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/b_Delivery"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:padding="8dp"
+            app:iconTint="@color/colorPrimary"
+            app:backgroundTint="@color/white"
+            app:cornerRadius="12dp"
+            app:icon="@drawable/delivery"
+            app:iconGravity="textStart"
+            app:iconSize="30dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/b_Pedidos"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:padding="8dp"
+            app:backgroundTint="@color/white"
+            app:iconTint="@color/colorPrimary"
+            app:cornerRadius="12dp"
+            app:icon="@drawable/pedido"
+            app:iconGravity="textStart"
+            app:iconSize="30dp" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/b_Menu"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:padding="8dp"
+            android:text=""
+            app:backgroundTint="@color/white"
+            app:iconTint="@color/colorPrimary"
+            app:cornerRadius="12dp"
+            app:icon="@drawable/menu"
+            app:iconGravity="textStart"
+            app:iconSize="30dp" />
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+        app:layout_constraintVertical_bias="1.0" />
+</androidx.constraintlayout.widget.ConstraintLayout>
