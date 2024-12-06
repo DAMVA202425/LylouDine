@@ -24,10 +24,11 @@ public class MesaDAO {
         dbHelper.close();
     }
 
-    public void addMesa(String name, String category) {
+    public void addMesa(String name, String category, int iconResource) {
         ContentValues values = new ContentValues();
         values.put(DatabaseHelper.COLUMN_MESA_NAME, name);
         values.put(DatabaseHelper.COLUMN_MESA_CATEGORY, category);
+        values.put(DatabaseHelper.COLUMN_MESA_ICON, iconResource); // Guardar el recurso del ícono
 
         database.insert(DatabaseHelper.TABLE_MESAS, null, values);
     }
@@ -40,12 +41,13 @@ public class MesaDAO {
         List<Mesa> mesas = new ArrayList<>();
 
         Cursor cursor = database.query(DatabaseHelper.TABLE_MESAS,
-                new String[]{DatabaseHelper.COLUMN_MESA_ID, DatabaseHelper.COLUMN_MESA_NAME, DatabaseHelper.COLUMN_MESA_CATEGORY},
+                new String[]{DatabaseHelper.COLUMN_MESA_ID, DatabaseHelper.COLUMN_MESA_NAME, DatabaseHelper.COLUMN_MESA_CATEGORY, DatabaseHelper.COLUMN_MESA_ICON},
                 DatabaseHelper.COLUMN_MESA_CATEGORY + " = ?", new String[]{category}, null, null, null);
 
         if (cursor != null && cursor.moveToFirst()) {
             do {
                 Mesa mesa = new Mesa(cursor.getLong(0), cursor.getString(1), cursor.getString(2));
+                mesa.setIconResource(cursor.getInt(3)); // Establecer el recurso del ícono
                 mesas.add(mesa);
             } while (cursor.moveToNext());
             cursor.close();

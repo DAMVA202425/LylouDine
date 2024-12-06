@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "restaurant.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2; // Incrementa la versión porque vas a modificar el esquema
 
     public static final String TABLE_USERS = "users";
     public static final String COLUMN_USER_ID = "_id";
@@ -20,6 +20,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_MESA_ID = "mesa_id";
     public static final String COLUMN_MESA_NAME = "mesa_name";
     public static final String COLUMN_MESA_CATEGORY = "mesa_category";
+    public static final String COLUMN_MESA_ICON = "icon_resource"; // Nuevo campo para el icono
 
     private static final String TABLE_CREATE_USERS =
             "CREATE TABLE " + TABLE_USERS + " (" +
@@ -32,7 +33,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             "CREATE TABLE " + TABLE_MESAS + " (" +
                     COLUMN_MESA_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     COLUMN_MESA_NAME + " TEXT, " +
-                    COLUMN_MESA_CATEGORY + " TEXT);";
+                    COLUMN_MESA_CATEGORY + " TEXT, " +
+                    COLUMN_MESA_ICON + " INTEGER DEFAULT 0);"; // Incluye el nuevo campo en la creación de la tabla
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -53,8 +55,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_MESAS);
-        onCreate(db);
+        if (oldVersion < 2) {
+            // Solo agrega la columna si la base de datos está en una versión anterior a la 2
+            db.execSQL("ALTER TABLE " + TABLE_MESAS + " ADD COLUMN " + COLUMN_MESA_ICON + " INTEGER DEFAULT 0");
+        }
     }
 }

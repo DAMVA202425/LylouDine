@@ -1,78 +1,83 @@
 package com.example.lyloudinev2.admin.category.FirstPlanta;
 
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
-
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import com.example.lyloudinev2.Mesa;
+import com.example.lyloudinev2.MesaAdapter;
 import com.example.lyloudinev2.MesaDAO;
 import com.example.lyloudinev2.R;
-
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import java.util.ArrayList;
 import java.util.List;
 
 public class PrimeraPlantaFragment extends Fragment {
 
-    private LinearLayout mesaContainer;
+    private RecyclerView mesaRecyclerView;
+    private MesaAdapter mesaAdapter;
     private MesaDAO mesaDAO;
-    private LinearLayout toggleContainer;
-    private EditText searchMesa;
+    private View toggleContainer;
+    private SearchView searchMesa;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_primera_planta, container, false);
 
-        mesaContainer = view.findViewById(R.id.mesa_container);
+        mesaRecyclerView = view.findViewById(R.id.mesa_recycler_view);
         toggleContainer = view.findViewById(R.id.toggle_container);
         searchMesa = view.findViewById(R.id.search_mesa);
         mesaDAO = new MesaDAO(getActivity());
 
+        mesaRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+
         loadMesas("");
 
-        searchMesa.addTextChangedListener(new TextWatcher() {
+        searchMesa.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                loadMesas(charSequence.toString());
+            public boolean onQueryTextSubmit(String query) {
+                loadMesas(query);
+                return true;
             }
 
             @Override
-            public void afterTextChanged(Editable editable) {}
+            public boolean onQueryTextChange(String newText) {
+                loadMesas(newText);
+                return true;
+            }
         });
 
-        Button addMesaButton = view.findViewById(R.id.btn_add_mesa);
+        FloatingActionButton addMesaButton = view.findViewById(R.id.btn_add_mesa);
         addMesaButton.setOnClickListener(v -> {
-            mesaDAO.addMesa("Nueva Mesa", "Primera Planta");
-            loadMesas(searchMesa.getText().toString());
+            mesaDAO.addMesa("Nueva Mesa", "Primera Planta", R.drawable.ic_mesa); // Agregar la mesa con el ícono
+            loadMesas(searchMesa.getQuery().toString());
         });
 
-        Button removeMesaButton = view.findViewById(R.id.btn_remove_mesa);
+
+        FloatingActionButton removeMesaButton = view.findViewById(R.id.btn_remove_mesa);
         removeMesaButton.setOnClickListener(v -> {
             List<Mesa> mesas = mesaDAO.getMesas("Primera Planta");
             if (!mesas.isEmpty()) {
                 mesaDAO.deleteMesa(mesas.get(mesas.size() - 1).getId());
-                loadMesas(searchMesa.getText().toString());
+                loadMesas(searchMesa.getQuery().toString());
             }
         });
 
-        Button toggleButton = view.findViewById(R.id.btn_toggle);
+        FloatingActionButton toggleButton = view.findViewById(R.id.btn_toggle);
         toggleButton.setOnClickListener(v -> {
             if (toggleContainer.getVisibility() == View.GONE) {
                 toggleContainer.setVisibility(View.VISIBLE);
+                toggleButton.setImageResource(R.drawable.close); // Cambia el ícono al cerrarse
             } else {
                 toggleContainer.setVisibility(View.GONE);
+                toggleButton.setImageResource(R.drawable.ic_add); // Cambia el ícono al abrirse
             }
         });
 
@@ -80,19 +85,15 @@ public class PrimeraPlantaFragment extends Fragment {
     }
 
     private void loadMesas(String query) {
-        mesaContainer.removeAllViews();
         List<Mesa> mesas = mesaDAO.getMesas("Primera Planta");
+        List<Mesa> filteredMesas = new ArrayList<>();
         for (Mesa mesa : mesas) {
             if (mesa.getName().toLowerCase().contains(query.toLowerCase())) {
-                Button mesaButton = new Button(getActivity());
-                mesaButton.setText(mesa.getName());
-                mesaButton.setOnClickListener(v -> {
-                    // Acción al hacer clic en el botón de la mesa
-                    // Podrías añadir la lógica para llevar a otra parte de la sección aquí
-                });
-                mesaContainer.addView(mesaButton);
+                filteredMesas.add(mesa);
             }
         }
+        mesaAdapter = new MesaAdapter(getActivity(), filteredMesas);
+        mesaRecyclerView.setAdapter(mesaAdapter);
     }
 
     @Override
