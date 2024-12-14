@@ -1,0 +1,7 @@
+# Normalizar finales de línea en archivos XML
+*.xml text eol=lf
+
+# Normalizar finales de línea en archivos de código fuente
+*.java text eol=lf
+*.txt text eol=lf
+*.md text eol=lf
