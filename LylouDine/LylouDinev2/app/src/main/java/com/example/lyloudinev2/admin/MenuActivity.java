@@ -1,5 +1,6 @@
 package com.example.lyloudinev2.admin;
 
+<<<<<<< HEAD
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -14,6 +15,17 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.lyloudinev2.R;
 import com.example.lyloudinev2.admin.category.CategoriaFragment;
+=======
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
+
+import androidx.appcompat.app.AppCompatActivity;
+import com.example.lyloudinev2.R;
+
+>>>>>>> 79e83847dc079fe72477831f712727a54114b9fb
 
 public class MenuActivity extends AppCompatActivity {
 
@@ -22,6 +34,7 @@ public class MenuActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
 
+<<<<<<< HEAD
         // Obtener el nombre de usuario desde SharedPreferences
         SharedPreferences sharedPreferences = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE);
         String username = sharedPreferences.getString("username", "Usuario no encontrado");
@@ -30,11 +43,14 @@ public class MenuActivity extends AppCompatActivity {
         TextView textViewUsername = findViewById(R.id.textView2);
         textViewUsername.setText(username);
 
+=======
+>>>>>>> 79e83847dc079fe72477831f712727a54114b9fb
         ImageButton btnClose = findViewById(R.id.b_Close);
         btnClose.setOnClickListener(v -> {
             finish();
             overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
         });
+<<<<<<< HEAD
 
         Button btnDelivery = findViewById(R.id.btnDelivery);
         btnDelivery.setOnClickListener(v -> loadFragment(new DeliveryFragment()));
@@ -59,5 +75,7 @@ public class MenuActivity extends AppCompatActivity {
         fragmentTransaction.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
         fragmentTransaction.replace(R.id.fragment_container, fragment);
         fragmentTransaction.commit();
+=======
+>>>>>>> 79e83847dc079fe72477831f712727a54114b9fb
     }
 }

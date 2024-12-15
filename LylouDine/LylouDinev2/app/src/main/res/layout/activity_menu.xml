@@ -3,7 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+<<<<<<< HEAD
     android:background="@color/white">
+=======
+    android:backgroundTint="@color/white">
+>>>>>>> 79e83847dc079fe72477831f712727a54114b9fb
 
     <ImageButton
         android:id="@+id/b_Close"
@@ -16,6 +20,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.916" />
+<<<<<<< HEAD
 
     <ImageButton
         android:id="@+id/b_user"
@@ -196,4 +201,6 @@
         app:layout_constraintStart_toEndOf="@+id/b_user"
         app:layout_constraintTop_toTopOf="parent" />
 
+=======
+>>>>>>> 79e83847dc079fe72477831f712727a54114b9fb
 </androidx.constraintlayout.widget.ConstraintLayout>
