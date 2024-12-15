@@ -1,5 +1,6 @@
 package com.example.lyloudinev2.admin;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
@@ -8,7 +9,7 @@ import com.google.android.material.button.MaterialButton;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
+
 import com.example.lyloudinev2.R;
 
 public class AdminActivity extends AppCompatActivity {
@@ -24,7 +25,6 @@ public class AdminActivity extends AppCompatActivity {
         initializeViews();
         setupListeners();
 
-        // Inicializar y seleccionar el botón por defecto
         initializeDefaultButton(btnCategoria);
     }
 
@@ -37,15 +37,18 @@ public class AdminActivity extends AppCompatActivity {
 
     private void setupListeners() {
         View.OnClickListener buttonClickListener = v -> {
-            if (selectedButton != null && selectedButton != v) {
-                deselectButton(selectedButton);
+            if (v.getId() == R.id.b_Menu) {
+                Intent intent = new Intent(AdminActivity.this, MenuActivity.class);
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_from_right, R.anim.slide_out_to_left);
+            } else {
+                if (selectedButton != null && selectedButton != v) {
+                    deselectButton(selectedButton);
+                }
+                selectedButton = (MaterialButton) v;
+                selectButton(selectedButton);
+                loadFragmentForSelectedButton(selectedButton);
             }
-
-            selectedButton = (MaterialButton) v;
-            selectButton(selectedButton);
-
-            // Cargar el fragmento correspondiente al botón seleccionado
-            loadFragmentForSelectedButton(selectedButton);
         };
 
         btnCategoria.setOnClickListener(buttonClickListener);
@@ -57,7 +60,6 @@ public class AdminActivity extends AppCompatActivity {
     private void initializeDefaultButton(MaterialButton defaultButton) {
         selectedButton = defaultButton;
         selectButton(selectedButton);
-        // Cargar el fragmento correspondiente al botón por defecto
         loadFragmentForSelectedButton(defaultButton);
     }
 
@@ -79,8 +81,6 @@ public class AdminActivity extends AppCompatActivity {
             fragment = new DeliveryFragment();
         } else if (button.getId() == R.id.b_Pedidos) {
             fragment = new PedidosFragment();
-        } else if (button.getId() == R.id.b_Menu) {
-            fragment = new MenuFragment();
         }
         if (fragment != null) {
             loadFragment(fragment);
@@ -88,9 +88,8 @@ public class AdminActivity extends AppCompatActivity {
     }
 
     private void loadFragment(Fragment fragment) {
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_container, fragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .commit();
     }
 }
