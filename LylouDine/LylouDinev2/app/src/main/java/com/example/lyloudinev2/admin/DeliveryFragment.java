@@ -1,66 +1,102 @@
 package com.example.lyloudinev2.admin;
 
+import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
+import com.example.lyloudinev2.DeliveryOrderAdapter;
 import com.example.lyloudinev2.R;
+import com.example.lyloudinev2.SimulateOrderActivity;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link DeliveryFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import com.example.lyloudinev2.database.DatabaseHelper;
+import com.example.lyloudinev2.DeliveryOrder;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class DeliveryFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private RecyclerView recyclerView;
+    private DeliveryOrderAdapter adapter;
+    private List<DeliveryOrder> deliveryOrders;
+    private DatabaseHelper dbHelper;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public DeliveryFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment DeliveryFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static DeliveryFragment newInstance(String param1, String param2) {
-        DeliveryFragment fragment = new DeliveryFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
+    @Nullable
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_delivery, container, false);
+
+        recyclerView = view.findViewById(R.id.recycler_view);
+        SearchView searchView = view.findViewById(R.id.search_view);
+        Button btnSimulateOrder = view.findViewById(R.id.btn_simulate_order);
+
+        dbHelper = new DatabaseHelper(getContext());
+        deliveryOrders = getDeliveryOrdersFromDB();
+        adapter = new DeliveryOrderAdapter(deliveryOrders);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setAdapter(adapter);
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                filter(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                filter(newText);
+                return false;
+            }
+        });
+
+        btnSimulateOrder.setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), SimulateOrderActivity.class);
+            startActivity(intent);
+        });
+
+        return view;
+    }
+
+    private List<DeliveryOrder> getDeliveryOrdersFromDB() {
+        List<DeliveryOrder> orders = new ArrayList<>();
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.query(DatabaseHelper.TABLE_DELIVERY_ORDERS, null, null, null, null, null, null);
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                long id = cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_ORDER_ID));
+                String orderNumber = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_ORDER_NUMBER));
+                String customerName = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_CUSTOMER_NAME));
+                String address = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_ADDRESS));
+                String phone = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_PHONE));
+                String deliveryTime = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_DELIVERY_TIME));
+                double price = cursor.getDouble(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_PRICE));
+                String status = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_STATUS));
+                orders.add(new DeliveryOrder(id, orderNumber, customerName, address, phone, deliveryTime, price, status));
+            } while (cursor.moveToNext());
+            cursor.close();
         }
+        return orders;
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_delivery, container, false);
+    private void filter(String text) {
+        List<DeliveryOrder> filteredList = new ArrayList<>();
+        for (DeliveryOrder order : deliveryOrders) {
+            if (order.getCustomerName().toLowerCase().contains(text.toLowerCase())) {
+                filteredList.add(order);
+            }
+        }
+        adapter.filterList(filteredList);
     }
 }
